@@ -1,0 +1,159 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulador de Performance</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #009EE3;
+      color: #003366;
+      padding: 1rem;
+      margin: 0;
+    }
+
+    .container {
+      background-color: #fff000;
+      padding: 2rem;
+      border-radius: 15px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #003366;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 1.2rem;
+      color: #003366;
+    }
+
+    input[type=number] {
+      width: 100%;
+      padding: 0.8rem;
+      font-size: 1.1rem;
+      border-radius: 8px;
+      border: 2px solid #009EE3;
+      box-sizing: border-box;
+    }
+
+    .result {
+      margin-top: 0.5rem;
+      font-size: 1rem;
+      color: #003366;
+    }
+
+    #output {
+      margin-top: 2rem;
+      font-size: 1.6rem;
+      font-weight: bold;
+      text-align: center;
+      color: #003366;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 1rem;
+      }
+
+      h1 {
+        font-size: 1.3rem;
+      }
+
+      input[type=number] {
+        font-size: 1rem;
+      }
+
+      #output {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Simulador de Performance</h1>
+
+    <label for="onboarding">Onboarding Realizado (Meta: 15 | Peso: 50%)</label>
+    <input type="number" id="onboarding" value="15" min="0" inputmode="numeric">
+    <div id="onboarding_result" class="result"></div>
+
+    <label for="tpn_m1">TPN M1 Realizado (Meta: 15 | Peso: 30%)</label>
+    <input type="number" id="tpn_m1" value="15" min="0" inputmode="numeric">
+    <div id="tpn_m1_result" class="result"></div>
+
+    <label for="tpn_m2">TPN M2 Realizado (Meta: 15 | Peso: 20%)</label>
+    <input type="number" id="tpn_m2" value="15" min="0" inputmode="numeric">
+    <div id="tpn_m2_result" class="result"></div>
+
+    <div id="output"></div>
+  </div>
+
+  <script>
+    const pesos = {
+      ONBOARDING: 0.50,
+      TPN_M1: 0.30,
+      TPN_M2: 0.20
+    };
+
+    const metas = {
+      ONBOARDING: 15,
+      TPN_M1: 15,
+      TPN_M2: 15
+    };
+
+    function calcularPerformance(onboarding, tpn_m1, tpn_m2) {
+      const onboarding_pct = (onboarding / metas.ONBOARDING) * 100;
+      const tpn_m1_pct = (tpn_m1 / metas.TPN_M1) * 100;
+      const tpn_m2_pct = (tpn_m2 / metas.TPN_M2) * 100;
+
+      const onboarding_score = onboarding_pct * pesos.ONBOARDING;
+      const tpn_m1_score = tpn_m1_pct * pesos.TPN_M1;
+      const tpn_m2_score = tpn_m2_pct * pesos.TPN_M2;
+
+      return {
+        onboarding_pct: onboarding_pct.toFixed(2),
+        tpn_m1_pct: tpn_m1_pct.toFixed(2),
+        tpn_m2_pct: tpn_m2_pct.toFixed(2),
+        final: (onboarding_score + tpn_m1_score + tpn_m2_score).toFixed(2)
+      };
+    }
+
+    const onboardingInput = document.getElementById('onboarding');
+    const tpnM1Input = document.getElementById('tpn_m1');
+    const tpnM2Input = document.getElementById('tpn_m2');
+
+    const onboardingResult = document.getElementById('onboarding_result');
+    const tpnM1Result = document.getElementById('tpn_m1_result');
+    const tpnM2Result = document.getElementById('tpn_m2_result');
+    const output = document.getElementById('output');
+
+    function atualizarPerformance() {
+      const onboarding = parseFloat(onboardingInput.value);
+      const tpn_m1 = parseFloat(tpnM1Input.value);
+      const tpn_m2 = parseFloat(tpnM2Input.value);
+
+      const resultado = calcularPerformance(onboarding, tpn_m1, tpn_m2);
+
+      onboardingResult.textContent = `Atingimento: ${resultado.onboarding_pct}%`;
+      tpnM1Result.textContent = `Atingimento: ${resultado.tpn_m1_pct}%`;
+      tpnM2Result.textContent = `Atingimento: ${resultado.tpn_m2_pct}%`;
+      output.textContent = `Performance Final: ${resultado.final}%`;
+    }
+
+    onboardingInput.addEventListener('input', atualizarPerformance);
+    tpnM1Input.addEventListener('input', atualizarPerformance);
+    tpnM2Input.addEventListener('input', atualizarPerformance);
+
+    atualizarPerformance();
+  </script>
+</body>
+</html>
